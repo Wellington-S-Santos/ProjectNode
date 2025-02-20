@@ -48,16 +48,55 @@ app.get('/',(req,res) => {
         }
         res.json({result});
 
-});
 
- app.listen(port,()=>{
-    console.log(`Servidor rodando na porta ${port}`);
- });
- 
- process.on('uncaughtException', (err)=> {
-    console.error("Erro não tratado:" , err);
- });
 
- process.on("unhandledRejection", (err) =>{
-    console.error("Regeição não tratada:", err);
- });
+    });
+
+    app.get('/primo',(req,res)=>{
+
+        const{number} = req.query;
+
+        const num = parseFloat (number);
+
+        if (isNaN(num)) {
+            return res.status(400).json({erro:"numero deve ser convertido corretamente"});
+            
+        }
+        function isPrimo(num) {
+            if (num < 2) {
+                return { isPrime: false, message: "O número não é primo" };
+            }
+            if (num === 2) {
+                return { isPrime: true, message: "O número é primo" };
+            }
+            if (num % 2 === 0) {
+                return { isPrime: false, message: "O número não é primo" };
+            }
+    
+            const sqrt = Math.sqrt(num);
+            for (let i = 3; i <= sqrt; i += 2) {
+                if (num % i === 0) {
+                    return { isPrime: false, message: "O número não é primo" };
+                }
+            }
+    
+            return { isPrime: true, message: "O número é primo" };
+        }
+    
+        const result = isPrimo(num);
+        res.json(result);
+    });
+    
+    app.listen(port, () => {
+        console.log(`Servidor rodando na porta ${port}`);
+    });
+    
+    // Tratamento de erros globais
+    process.on('uncaughtException', (err) => {
+        console.error("Erro não tratado:", err);
+    });
+    
+    process.on("unhandledRejection", (err) => {
+        console.error("Rejeição não tratada:", err);
+    });
+       
